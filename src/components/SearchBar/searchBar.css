@@ -43,5 +43,27 @@
 }
 .container {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+}
+.slider {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.modal-container {
+  background-color: transparent;
+}
+.modal-header {
+  background-color: #28a745;
+}
+.modal-body {
+  background-color: #e9dddd;
+}
+.input-div {
+  font-size: x-large;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
