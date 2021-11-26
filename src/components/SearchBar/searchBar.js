@@ -19,6 +19,7 @@ function SearchBar() {
   const [gener, setgener] = useState("");
   const [advSearch, setadvSearch] = useState(false);
   const [advSearchOptions, setadvSearchOptions] = useState({});
+  const [suggestion, setsuggestion] = useState(false);
   /*
     function for fetch search results from TheMovieDB API
   */
@@ -29,22 +30,9 @@ function SearchBar() {
         query:searchValue
       } //parameters for API request
       if(searchCatg==="Movie" && advSearch){
-        let advanceSearch={}
-        if(year){
-          advanceSearch={...advanceSearch, year}
-        }
-        if(adult){
-          advanceSearch={...advanceSearch, adult}
-        }
-        if(company){
-          advanceSearch={...advanceSearch, company}
-        }
-        if(gener){
-          advanceSearch={...advanceSearch, gener}
-        }
-        setadvSearchOptions(advanceSearch)
+        setAdvSearchParameters()
         params={
-          ...params,...advanceSearch
+          ...params,...advSearchOptions
         }
         
       }
@@ -61,6 +49,7 @@ function SearchBar() {
     function for save on change value of search input feild 
   */
   const triggerSearchSuggestion=(event)=>{ 
+    setsuggestion(true)
     setsearchValue(event.target.value)
     event.preventDefault()
     if(event.target.value===""){
@@ -87,6 +76,22 @@ function SearchBar() {
             console.log(error);
         })
   }
+  const setAdvSearchParameters=()=>{
+    let advanceSearch={}
+    if(year){
+      advanceSearch={...advanceSearch, year}
+    }
+    if(adult){
+      advanceSearch={...advanceSearch, adult}
+    }
+    if(company){
+      advanceSearch={...advanceSearch, company}
+    }
+    if(gener){
+      advanceSearch={...advanceSearch, gener}
+    }
+    setadvSearchOptions(advanceSearch)
+  }
   useEffect(() => {
     getGenerList()
   },[]);
@@ -106,16 +111,28 @@ function SearchBar() {
           
           <button onClick={()=>{setsearchCatg((searchCatg==="Movie")? "Artist":"Movie")}} className="btn btn-outline-success" >&gt;</button>
       </div>
-      <div className="col-md-12 m-3">
+      <div className="col-md-12 m-3 ">
         
         <div className="col-md-12 search-bar">
           <div className=" row search-input">
             <input onChange={(event)=>{triggerSearchSuggestion(event)}} className="search-input-text" type="text"/>
             <div className="search-icon-div" onClick={()=>{searchMovie()}}>
-              <SearchIcon className="search-icon"  style={{fill: "white"}}/>
+              {
+                (searchCatg==="Movie") &&
+                <button className="btn btn-outline-success" onClick={()=>{
+                  searchMovie()
+                  setsuggestion(false)
+                  }} >
+                  <SearchIcon className="search-icon"  style={{fill: "white"}}/>
+                </button>
+              }
+              
+              
             </div>
           </div>
-          <div className="search-result">
+          {
+            suggestion &&
+            <div className="search-result">
             {suggestionList.map((item)=>{
               return(
                 <div className="search-result-item">
@@ -125,13 +142,29 @@ function SearchBar() {
                 </div>
               )
             })}
-          </div>
+            </div>
+          }
+          
           
         </div>
 
       </div>
-      <Button variant="primary" onClick={()=>{setmodalShow(true)}}>
-        Launch static backdrop modal
+      {
+        advSearch &&
+        <div>
+          {
+            Object.keys(advSearchOptions).map((value,index)=>{
+              return(
+                <span key={index}>{value}:{advSearchOptions[value]}</span>
+              )
+            })
+          }
+        </div>
+
+      }
+      
+      <Button variant="success" onClick={()=>{setmodalShow(true)}}>
+        Advance Search
       </Button>
 
       <Modal
@@ -178,7 +211,9 @@ function SearchBar() {
           <Button variant="secondary" onClick={()=>{setmodalShow(false)}}>
             Close
           </Button>
-          <Button variant="primary">Understood</Button>
+          <Button onClick={()=>{setadvSearch(true)
+                              setmodalShow(false)
+                              setAdvSearchParameters()}} variant="primary">Apply</Button>
         </Modal.Footer>
       </Modal>
     </div>
