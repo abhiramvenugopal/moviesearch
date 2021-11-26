@@ -4,6 +4,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Modal,Button } from 'react-bootstrap';
 import axios from "axios";
 import MovieList from "../MovieList/movieList";
+import NavBar from "../NavBar/navBar";
+import WishList from "../WishList/wishList";
 /*
     SearchBar componener is using for searching movies or series from TheMovieDB API 
     it will fetch the list of movies or a specific movie from the TheMovieDB API 
@@ -22,6 +24,7 @@ function SearchBar() {
   const [advSearchOptions, setadvSearchOptions] = useState({});
   const [suggestion, setsuggestion] = useState(false);
   const [movieSearchResult, setmovieSearchResult] = useState([]);
+  const [changeToWishList, setchangeToWishList] = useState(false)
   /*
     function for fetch search results from TheMovieDB API
   */
@@ -101,8 +104,25 @@ function SearchBar() {
   useEffect(() => {
     getGenerList()
   },[]);
+  const onclickSearchResult=(item)=>{
+    if(searchCatg==="Movie"){
+      setsearchValue(item.original_title)
+      searchMovie()
+      setsuggestion(false)
+    }
+    else{
+      setmovieSearchResult(item.known_for)
+      setsearchValue(item.name)
+      setsuggestion(false)
+    }
+   
+
+  }
 
   return (
+    <div>
+        <NavBar wishlist={changeToWishList} activeSearch={()=>{setchangeToWishList(false)}} activeWishlist={()=>{setchangeToWishList(true)}}/>
+    {!(changeToWishList) && 
     <div>
     <div className="col-md-8 container">
       <div className="col-md-12 slider">
@@ -122,7 +142,7 @@ function SearchBar() {
         
         <div className="col-md-12 search-bar">
           <div className=" row search-input">
-            <input onChange={(event)=>{triggerSearchSuggestion(event)}} className="search-input-text" type="text"/>
+            <input value={searchValue} onChange={(event)=>{triggerSearchSuggestion(event)}} className="search-input-text" type="text"/>
             <div className="search-icon-div" onClick={()=>{searchMovie()}}>
               {
                 (searchCatg==="Movie") &&
@@ -140,13 +160,16 @@ function SearchBar() {
           {
             suggestion &&
             <div className="search-result">
-            {suggestionList.map((item)=>{
+            {suggestionList.map((item,index)=>{
               return(
-                <div className="search-result-item">
-                  {(searchCatg==="Movie")? <p>{item.original_title}</p> : <p>{item.name}</p>}
-                  <p>{item.original_title}</p>
+                
+                <div key={index} className="search-result-item">
+                  <button className="btn-clear-default" onClick={()=>{onclickSearchResult(item)}}>
+                    {(searchCatg==="Movie")? <p>{item.original_title}</p> : <p>{item.name}</p>}
+                  </button>
 
                 </div>
+                
               )
             })}
             </div>
@@ -232,6 +255,9 @@ function SearchBar() {
     }
     
   </div>
+  </div>
+  }
+  {(changeToWishList) && <WishList/>}
   </div>
     
     

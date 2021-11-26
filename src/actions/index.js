@@ -9,3 +9,15 @@ export const decrement=()=>{
         type:'DECREMENT'
     }
 }
+export const append=(value)=>{
+    return {
+        type:'APPEND',
+        payload : value
+    }
+}
+export const remove=(value)=>{
+    return {
+        type:'REMOVE',
+        payload : value
+    }
+}
