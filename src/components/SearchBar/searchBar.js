@@ -3,6 +3,7 @@ import React, {useState,useEffect} from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { Modal,Button } from 'react-bootstrap';
 import axios from "axios";
+import MovieList from "../MovieList/movieList";
 /*
     SearchBar componener is using for searching movies or series from TheMovieDB API 
     it will fetch the list of movies or a specific movie from the TheMovieDB API 
@@ -20,10 +21,11 @@ function SearchBar() {
   const [advSearch, setadvSearch] = useState(false);
   const [advSearchOptions, setadvSearchOptions] = useState({});
   const [suggestion, setsuggestion] = useState(false);
+  const [movieSearchResult, setmovieSearchResult] = useState([]);
   /*
     function for fetch search results from TheMovieDB API
   */
-  const searchMovie=()=>{
+  const searchMovie=(onchange=false)=>{
     const apiOption=(searchCatg==="Movie")? "movie":"person" 
     let params={
         api_key:"ea4f7ec2ab24ce3ee2c9c9daf9695253",
@@ -40,10 +42,14 @@ function SearchBar() {
         .then(function (response) {
             setsuggestionList(response.data.results) //setting suggestion values for search
             console.log(response.data)
+            if(searchCatg==="Movie" && !onchange){
+              setmovieSearchResult(response.data.results)
+            }
         })
         .catch(function (error) {
             console.log(error);
         })
+    
   }
   /*
     function for save on change value of search input feild 
@@ -56,7 +62,7 @@ function SearchBar() {
       setsuggestionList([])
     }
     else{
-      searchMovie()
+      searchMovie(true)
     }
 
   }
@@ -97,6 +103,7 @@ function SearchBar() {
   },[]);
 
   return (
+    <div>
     <div className="col-md-8 container">
       <div className="col-md-12 slider">
           <button onClick={()=>{setsearchCatg((searchCatg==="Movie")? "Artist":"Movie")}} className="btn btn-outline-success">&lt;</button>
@@ -216,7 +223,16 @@ function SearchBar() {
                               setAdvSearchParameters()}} variant="primary">Apply</Button>
         </Modal.Footer>
       </Modal>
+      
     </div>
+    <div>
+    {
+      // (movieSearchResult.length!==0) && <MovieList movies={movieSearchResult}/>
+      <MovieList movies={movieSearchResult}/>
+    }
+    
+  </div>
+  </div>
     
     
   );
