@@ -44,7 +44,6 @@ function SearchBar() {
     axios.get('https://api.themoviedb.org/3/search/'+apiOption,{params:params})
         .then(function (response) {
             setsuggestionList(response.data.results) //setting suggestion values for search
-            console.log(response.data)
             if(searchCatg==="Movie" && !onchange){
               setmovieSearchResult(response.data.results)
             }
@@ -79,12 +78,14 @@ function SearchBar() {
     axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=ea4f7ec2ab24ce3ee2c9c9daf9695253&language=en-US',{params:params})
         .then(function (response) {
             setgenerList(response.data.genres) //setting gener options for advance search
-            console.log(response.data.genres)
         })
         .catch(function (error) {
             console.log(error);
         })
   }
+  /*
+    function for setting advance search options
+  */
   const setAdvSearchParameters=()=>{
     let advanceSearch={}
     if(year){
@@ -104,6 +105,11 @@ function SearchBar() {
   useEffect(() => {
     getGenerList()
   },[]);
+
+  /*
+    function for setting search value from suggestion
+  */
+
   const onclickSearchResult=(item)=>{
     if(searchCatg==="Movie"){
       setsearchValue(item.original_title)

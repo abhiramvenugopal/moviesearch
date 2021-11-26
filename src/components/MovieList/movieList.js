@@ -3,7 +3,9 @@ import React, {useState,useEffect} from 'react';
 import { useSelector ,useDispatch } from "react-redux";
 import GradeIcon from '@mui/icons-material/Grade';
 import { append,remove } from "../../actions";
-
+ /*
+    component for listing movies
+  */
 
 function MovieList(props) {
     const wishlistredux=useSelector(state =>state.wishlist)
@@ -14,12 +16,9 @@ function MovieList(props) {
         setmovies(props.movies)
       },[props.movies]);
     const setWishlistStatus=(item)=>{
-        console.log(wishList)
-        console.log(wishList[item.id])
         if(wishList[item.id]){
             dispatch(remove({id:item.id}))
             setwishList(JSON.parse(JSON.stringify(wishlistredux)))
-            console.log("wishlistdelete",wishlistredux)
         }
         else{
             dispatch(append({id:item.id,value:item}))

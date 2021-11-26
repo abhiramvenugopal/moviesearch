@@ -3,7 +3,9 @@ import React, {useState,useEffect} from 'react';
 import { useSelector ,useDispatch } from "react-redux";
 import { append,remove } from "../../actions";
 import MovieList from "../MovieList/movieList";
-
+ /*
+    component for listing wishlist items
+  */
 function WishList(props) {
     const wishlistredux=useSelector(state =>state.wishlist)
     const [wishList, setwishList] = useState(wishlistredux);
@@ -19,7 +21,10 @@ function WishList(props) {
     }, [wishList])
   return (
       <div>
+          {/* reusing movie list componenet for listing wishlist items */}
+
           <MovieList movies={movieList}/>
+
       </div>
       
     
